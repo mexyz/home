@@ -2,56 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xyz.home.dao.CategoryDao" >
   <resultMap id="BaseResultMap" type="com.xyz.home.model.Category" >
-    <id column="ca_id" property="caId" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="p_id" property="pId" jdbcType="INTEGER" />
+    <result column="ca_id" property="caId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="resultMap" type="map" >
-    <id column="ca_id" property="id" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="p_id" property="_parentId" jdbcType="INTEGER" />
+    <result column="ca_id" property="caId" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
   </resultMap>
   
-  <select id="selectCategory" resultMap="resultMap" parameterType="com.xyz.home.model.Category">
-    select * from category
-    <where>
-    <if test="caId!=null and caId!=''">
-    ca_id=#{caId}
-    </if>
-    <if test="name!=null and name!=''">
-    and name=#{name}
-    </if>
-    <if test="type!=null">
-    and type=#{type}
-    </if>
-    </where>
+  <select id="selectCategory" parameterType="com.xyz.home.model.Category" resultMap="resultMap">
+	  SELECT
+		*
+	FROM
+		category
+	<where>
+	<if test="type!=null and type!=''">
+	type=#{type}
+	</if>
+	<if test="caId!=null and caId!=''">
+	and ca_id=#{caId}
+	</if>
+	<if test="name!=null and name!=''">
+	and name=#{name}
+	</if>
+	</where>
   </select>
   
-  <select id="selectCategoryCount" resultType="java.lang.Integer" >
-    select count(*) from category
+  <select id="selectCategoryCount" resultType="int">
+   SELECT
+		count(1)
+	FROM
+		category
   </select>
   
-  <delete id="delCategory"  parameterType="map" >
-    delete from category
-    where ca_id in
-	<foreach item="item" index="index" collection="ids"
-      open="(" separator="," close=")">
-        #{item}
-  	</foreach>
-  </delete>
-  
-  <update id="modPId" parameterType="map">
-  update category set p_id=0 
-    where p_id in
-	<foreach item="item" index="index" collection="ids"
-      open="(" separator="," close=")">
-        #{item}
-  	</foreach>
-  </update>
-  
-  <insert id="addCategory" parameterType="com.xyz.home.model.Category" >
+   <insert id="addCategory" parameterType="com.xyz.home.model.Category" >
     insert into category
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="caId != null" >
@@ -82,7 +71,7 @@
       </if>
     </trim>
   </insert>
- 
+  
   <update id="modCategory" parameterType="com.xyz.home.model.Category" >
     update category
     <set >
@@ -92,8 +81,29 @@
       <if test="pId != null" >
         p_id = #{pId,jdbcType=INTEGER},
       </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
     </set>
     where ca_id = #{caId,jdbcType=INTEGER}
   </update>
   
+  <delete id="delCategory" parameterType="map">
+  delete from category
+    where ca_id in <foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+  <update id="modPId" parameterType="map">
+  update category set p_id=0
+    where p_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </update>
+  
+
 </mapper>

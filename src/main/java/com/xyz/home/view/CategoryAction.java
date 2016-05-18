@@ -96,7 +96,7 @@ public class CategoryAction extends BaseAction{
 				param.put("msg","Y");
 			}else if(l.size()==1){
 				Map<String,Object> map=l.get(0);
-				if(String.valueOf(map.get("id")).equals(request.getParameter("cId"))){
+				if(String.valueOf(map.get("caId")).equals(request.getParameter("caId"))){
 					param.put("msg","Y");
 				}else{
 					param.put("msg","N");

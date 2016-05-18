@@ -3,10 +3,10 @@
 <generatorConfiguration >
   <context id="context1" >
     <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3306/home" userId="root" password="root" />
-    <javaModelGenerator targetPackage="com.xyz.home.test.model" targetProject="D:\XYZ\eclipse-workspace\home\src\main\java" /> 
-    <sqlMapGenerator targetPackage="com.xyz.home.test.mappers" targetProject="D:\XYZ\eclipse-workspace\home\src\main\java" />
-    <javaClientGenerator targetPackage="com.xyz.home.test.dao" targetProject="D:\XYZ\eclipse-workspace\home\src\main\java" type="XMLMAPPER" /> 
-    <table tableName="balance" >
+    <javaModelGenerator targetPackage="com.xyz.home.test.model" targetProject="D:\XYZ\eclipse-workspace\home\src\test\java" /> 
+    <sqlMapGenerator targetPackage="com.xyz.home.test.mappers" targetProject="D:\XYZ\eclipse-workspace\home\src\test\java" />
+    <javaClientGenerator targetPackage="com.xyz.home.test.dao" targetProject="D:\XYZ\eclipse-workspace\home\src\test\java" type="XMLMAPPER" /> 
+    <table tableName="category" >
     </table>
   </context>
 </generatorConfiguration>

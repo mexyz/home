@@ -9,19 +9,21 @@
 <script type="text/javascript" src="../static/js/category.js"></script>
 </head>
 <body class="easyui-layout" fit="true">
-<div data-options="region:'north',border:false">
+ <div data-options="region:'north',border:false">
  <div class="searchDiv">
-  <table class="table"><tr><th>类别:</th><td class="lastCol"><input name="type" value="0" checked="checked" type="radio"/>收入&nbsp;&nbsp;&nbsp;<input name="type" value="1" type="radio"/>支出</td></tr>
+ <table class="table"><tr><th>真实姓名:</th><td class="lastCol"><input id="realName" class="easyui-textbox" type="text"/></td></tr>
  <tr class="lastrow"><td colspan="2"><a id="searchBtn" class="easyui-linkbutton" data-options="iconCls:'icon-search'">搜索</a>&nbsp;&nbsp;&nbsp;<a id="clearBtn" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">重置</a></td></tr>
  </table>
 </div>
  </div>
-
  <div data-options="region:'center',border:false">
  <table id="dg"></table>
  </div>
 
 	
+    
+
+
 <div id="tb">
 <c:forEach var="item" items="${op}">
 <c:if test="${item=='增加分类'}">
@@ -34,45 +36,47 @@
 <a href="javascript:void(0)" id="delBtn" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"></a>
 </c:if>
 </c:forEach>
-</div>   
+</div>
 
 <div id="addDialog1">
 <form id="addForm1" method="post">
 <input name="type" type="hidden"/>
 <table align="center" cellspacing="10" >
-<tr><td style="text-align: right;"><font color="red">*</font>名称：</td><td><input class="easyui-textbox" type="text" name="name" class="easyui-validatebox" data-options="required:true,validType:['category','recategory[0]']" prompt="2-10中文字符" style="width: 200px"/></td></tr>
+<tr><td style="text-align: right;"><font color="red">*</font>分类名称：</td><td><input class="easyui-textbox" type="text" name="name" class="easyui-validatebox" data-options="required:true,validType:['category','recategory']" prompt="2-12位中文字符" style="width: 200px"/></td></tr>
 </table>
 </form>
 </div>
+
 
 <div id="addDialog2">
 <form id="addForm2" method="post">
 <input name="type" type="hidden"/>
 <input name="pId" type="hidden"/>
 <table align="center" cellspacing="10" >
-<tr><td style="text-align: right;"><font color="red">*</font>名称：</td><td><input class="easyui-textbox" type="text" name="name" class="easyui-validatebox" data-options="required:true,validType:['category','recategory[0]']" prompt="2-10中文字符" style="width: 200px"/></td></tr>
+<tr><td style="text-align: right;"><font color="red">*</font>分类名称：</td><td><input class="easyui-textbox" type="text" name="name" class="easyui-validatebox" data-options="required:true,validType:['category','recategory']" prompt="2-12位中文字符" style="width: 200px"/></td></tr>
 </table>
 </form>
 </div>
+
 
 
 <div id="modDialog1">
 <form id="modForm1" method="post">
 <input name="caId" type="hidden"/>
 <table align="center" cellspacing="10" >
-<tr><td style="text-align: right;"><font color="red">*</font>名称：</td><td><input id="modName1" class="easyui-textbox" type="text" name="name" class="easyui-validatebox" data-options="required:true,validType:['category','recategory[1]']" prompt="2-10中文字符" style="width: 200px"/></td></tr>
+<tr><td style="text-align: right;"><font color="red">*</font>分类名称：</td><td><input class="easyui-textbox" type="text" id="modName1" name="name" class="easyui-validatebox" data-options="required:true,validType:['category','recategory[1]']" prompt="2-12位中文字符" style="width: 200px"/></td></tr>
 </table>
 </form>
 </div>
+
 
 <div id="modDialog2">
 <form id="modForm2" method="post">
 <input name="caId" type="hidden"/>
 <table align="center" cellspacing="10" >
-<tr><td style="text-align: right;"><font color="red">*</font>名称：</td><td><input id="modName2" class="easyui-textbox" type="text" name="name" data-options="required:true,validType:['category','recategory[2]']" prompt="2-10中文字符" style="width: 200px"/></td></tr>
+<tr><td style="text-align: right;"><font color="red">*</font>分类名称：</td><td><input class="easyui-textbox" type="text" id="modName2" name="name" class="easyui-validatebox" data-options="required:true,validType:['category','recategory[2]']" prompt="2-12位中文字符" style="width: 200px"/></td></tr>
 </table>
 </form>
 </div>
-
 </body>
 </html>

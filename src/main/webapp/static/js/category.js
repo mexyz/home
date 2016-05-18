@@ -5,7 +5,7 @@ $(function(){
         lines:true,
         fitColumns:true,
         singleSelect:false,
-        idField:'id',
+        idField:'caId',
         treeField:'name',
         columns:[[
             {field:'ck',checkbox:true},
@@ -23,9 +23,9 @@ $(function(){
     		$("#addForm1 input[name='type']").val(t?0:1);
     		$('#addDialog1').dialog("open");
     	}else if(rows.length==1){
-    		if($("#dg").treegrid("getLevel",rows[0].id)==1){
+    		if($("#dg").treegrid("getLevel",rows[0].caId)==1){
     			$("#addForm2 input[name='type']").val(t?0:1);
-    			$("#addForm2 input[name='pId']").val(rows[0].id);
+    			$("#addForm2 input[name='pId']").val(rows[0].caId);
     			$('#addDialog2').dialog("open");
     		}else{
     			$.messager.alert('提示','请选择一级分类','info');
@@ -39,12 +39,12 @@ $(function(){
     $("#modBtn").click(function(){
     	var rows=$("#dg").treegrid("getSelections");
     	if(rows.length==1){
-    		if($("#dg").treegrid("getLevel",rows[0].id)==1){
-    			$("#modForm1 input[name='caId']").val(rows[0].id);
+    		if($("#dg").treegrid("getLevel",rows[0].caId)==1){
+    			$("#modForm1 input[name='caId']").val(rows[0].caId);
     			$("#modName1").textbox("setText",rows[0].name);
     			$('#modDialog1').dialog("open");
     		}else{
-    			$("#modForm2 input[name='caId']").val(rows[0].id);
+    			$("#modForm2 input[name='caId']").val(rows[0].caId);
     			$("#modName2").textbox("setValue",rows[0].name);
     			$('#modDialog2').dialog("open");
     		}
@@ -60,7 +60,7 @@ $(function(){
 			    if (r){
 			    	var ids=[];
 			        for(var i=0;i<rows.length;i++){
-			        	ids.push(rows[i].id);
+			        	ids.push(rows[i].caId);
 			        }
 			        $.ajax({
 						url:'del',

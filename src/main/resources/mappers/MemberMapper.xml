@@ -32,7 +32,7 @@
   SELECT count(1) from member m left join role_member rm on m.m_id=rm.m_id
   where rm.r_id=#{rId}
 	  <if test="realName!=null and realName!=''">
-	  real_name like CONCAT('%',#{realName},'%')
+	  and real_name like CONCAT('%',#{realName},'%')
 	  </if>
   </select>
   

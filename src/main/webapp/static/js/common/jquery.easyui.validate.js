@@ -15,10 +15,10 @@ $.extend($.fn.validatebox.defaults.rules, {
         validator: function(value, param){
         	var data={};
         	data["name"]=value;
-        	if(param==1){
-        		data["cId"]=$("#modForm1 input[name='caId']").val();
-        	}else if(param==2){
-        		data["cId"]=$("#modForm2 input[name='caId']").val();
+        	if(param[0]==1){
+        		data["caId"]=$("#modForm1 input[name='caId']").val();
+        	}else if(param[0]==2){
+        		data["caId"]=$("#modForm2 input[name='caId']").val();
         	}
 	        if(/^([\u4E00-\u9FA5]{2,10})$/.test(value)){
 	        	var t=true;
