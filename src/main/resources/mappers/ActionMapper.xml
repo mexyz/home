@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyz.home.dao.ActionDao" >
+  <resultMap id="BaseResultMap" type="map" >
+    <result column="a_id" property="aId" jdbcType="INTEGER" />
+    <result column="m_id" property="mId" jdbcType="INTEGER" />
+    <result column="r_id" property="rId" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="describe" property="describe" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectActions" resultMap="BaseResultMap" parameterType="map">
+	SELECT a.a_id,a.m_id,a.url,a.describe,r.r_id from action a LEFT JOIN role_action r on a.a_id=r.a_id and r.r_id=#{rId}
+  </select>
+  
+  <select id="selectDescribe" resultType="String" parameterType="map">
+  select `describe` from action a LEFT JOIN role_action ra on a.a_id=ra.a_id where ra.r_id=#{rId} and a.m_id=#{mId}
+  </select>
+
+</mapper>

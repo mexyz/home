@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyz.home.dao.StatsDao" >
+  
+  <resultMap id="resultMap" type="map" >
+    <result column="b_id" property="bId" jdbcType="INTEGER" />
+    <result column="ca_id" property="caId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="call_name" property="callName" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="m_id" property="mId" jdbcType="INTEGER" />
+    <result column="money" property="money" jdbcType="REAL" />
+    <result column="spend_money" property="spendMoney" jdbcType="REAL" />
+    <result column="earning_money" property="earningMoney" jdbcType="REAL" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="spend_date" property="spendDate" jdbcType="DATE" />
+  </resultMap>
+  
+   <select id="selectTimeSpendStats" parameterType="map" resultMap="resultMap">
+  SELECT
+  <choose>
+  <when test="groupBy=='year'">
+	DATE_FORMAT(spend_date, '%Y') szDate,
+  </when>
+  <when test="groupBy=='month'">
+  DATE_FORMAT(spend_date, '%Y-%m') szDate,
+  </when>
+ <otherwise>
+ DATE_FORMAT(spend_date, '%Y-%m-%d') szDate,
+ </otherwise>
+  </choose>
+	sum(money) money
+	FROM
+		spend
+	where m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and spend_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and money&lt;=#{endMoney}
+	</if>
+	GROUP BY szDate
+	<if test="start != null">
+	 order by ${sort} ${order} limit #{start},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectTimeEarningStats" parameterType="map" resultMap="resultMap">
+  SELECT
+  <choose>
+  <when test="groupBy=='year'">
+	DATE_FORMAT(earning_date, '%Y') szDate,
+  </when>
+  <when test="groupBy=='month'">
+  DATE_FORMAT(earning_date, '%Y-%m') szDate,
+  </when>
+ <otherwise>
+ DATE_FORMAT(earning_date, '%Y-%m-%d') szDate,
+ </otherwise>
+  </choose>
+	sum(money) money
+	FROM
+		earning
+	where m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and earning_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and earning_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and money&lt;=#{endMoney}
+	</if>
+	GROUP BY szDate
+	<if test="start != null">
+	 order by ${sort} ${order} limit #{start},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectTimeSpendStatsCount" resultType="int" parameterType="map">
+  select count(1) from (SELECT
+	  <choose>
+  <when test="groupBy=='year'">
+	DATE_FORMAT(spend_date, '%Y') szDate,
+  </when>
+  <when test="groupBy=='month'">
+  DATE_FORMAT(spend_date, '%Y-%m') szDate,
+  </when>
+ <otherwise>
+ DATE_FORMAT(spend_date, '%Y-%m-%d') szDate,
+ </otherwise>
+  </choose>
+	sum(money) money
+	FROM
+		spend
+	where m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and spend_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and money&lt;=#{endMoney}
+	</if>
+	GROUP BY szDate) cc
+  </select>
+  
+  <select id="selectTimeEarningStatsCount" resultType="int" parameterType="map">
+  select count(1) from (SELECT
+	  <choose>
+  <when test="groupBy=='year'">
+	DATE_FORMAT(earning_date, '%Y') szDate,
+  </when>
+  <when test="groupBy=='month'">
+  DATE_FORMAT(earning_date, '%Y-%m') szDate,
+  </when>
+ <otherwise>
+ DATE_FORMAT(earning_date, '%Y-%m-%d') szDate,
+ </otherwise>
+  </choose>
+	sum(money) money
+	FROM
+		earning
+	where m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and earning_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and earning_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and money&lt;=#{endMoney}
+	</if>
+	GROUP BY szDate) cc
+  </select>
+  
+  <select id="selectCategorySpendStats" parameterType="map" resultMap="resultMap">
+  SELECT
+	b.ca_id,
+	c.`name`,
+	sum(money) money
+	FROM
+		spend b
+	LEFT JOIN category c ON b.ca_id = c.ca_id
+	where b.m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and b.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and b.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.spend_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	GROUP BY ca_id
+	<if test="start!=null">
+	 order by ${sort} ${order} limit #{start},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectCategoryEarningStats" parameterType="map" resultMap="resultMap">
+  SELECT
+	b.ca_id,
+	c.`name`,
+	sum(money) money
+	FROM
+		earning b
+	LEFT JOIN category c ON b.ca_id = c.ca_id
+	where b.m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and b.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and b.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.earning_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.earning_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	GROUP BY ca_id
+	<if test="start!=null">
+	 order by ${sort} ${order} limit #{start},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectCategorySpendStatsCount" resultType="int" parameterType="map">
+   select count(1) from (SELECT
+	b.ca_id,
+	c.`name`,
+	sum(money) money
+	FROM
+		spend b
+	LEFT JOIN category c ON b.ca_id = c.ca_id
+	where b.m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and b.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and b.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.spend_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	GROUP BY ca_id) cc
+	</select>
+
+  <select id="selectCategoryEarningStatsCount" resultType="int" parameterType="map">
+   select count(1) from (SELECT
+	b.ca_id,
+	c.`name`,
+	sum(money) money
+	FROM
+		earning b
+	LEFT JOIN category c ON b.ca_id = c.ca_id
+	where b.m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and b.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and b.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.earning_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.earning_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	GROUP BY ca_id) cc
+	</select>
+	
+  <select id="selectMemberSpendStats" parameterType="map" resultMap="resultMap">
+  SELECT
+	b.m_id,
+	m.real_name,
+	c.call_name,
+	sum(money) money
+FROM
+	spend b
+LEFT JOIN member m ON b.m_id = m.m_id
+LEFT JOIN `call` c ON m.m_id = c.m_id
+AND c.u_id = #{uId}
+where b.m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and b.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and b.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.spend_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	GROUP BY m_id 
+	<if test="start!=null">
+	 order by ${sort} ${order} limit #{start},#{pageSize}
+	</if>
+  </select>
+
+<select id="selectMemberEarningStats" parameterType="map" resultMap="resultMap">
+  SELECT
+	b.m_id,
+	m.real_name,
+	c.call_name,
+	sum(money) money
+FROM
+	earning b
+LEFT JOIN member m ON b.m_id = m.m_id
+LEFT JOIN `call` c ON m.m_id = c.m_id
+AND c.u_id = #{uId}
+where b.m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and b.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and b.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.earning_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.earning_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	GROUP BY m_id 
+	<if test="start!=null">
+	 order by ${sort} ${order} limit #{start},#{pageSize}
+	</if>
+  </select>
+   
+  <select id="selectMemberSpendStatsCount" resultType="int" parameterType="map">
+  select count(1) from (
+  SELECT
+	b.m_id,
+	m.real_name,
+	c.call_name,
+	sum(money) money
+FROM
+	spend b
+LEFT JOIN member m ON b.m_id = m.m_id
+LEFT JOIN `call` c ON m.m_id = c.m_id
+AND c.u_id = ${uId}
+where b.m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and b.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and b.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.spend_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	GROUP BY m_id
+  ) cc
+  </select>
+
+<select id="selectMemberEarningStatsCount" resultType="int" parameterType="map">
+  select count(1) from (
+  SELECT
+	b.m_id,
+	m.real_name,
+	c.call_name,
+	sum(money) money
+FROM
+	earning b
+LEFT JOIN member m ON b.m_id = m.m_id
+LEFT JOIN `call` c ON m.m_id = c.m_id
+AND c.u_id = ${uId}
+where b.m_id in (select m_id from role_member where r_id=#{rId})
+	<if test="caId!=null and caId!=''">
+	and b.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and b.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.earning_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.earning_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	GROUP BY m_id
+  ) cc
+  </select>
+  
+  <select id="selectEarningSpendStats" parameterType="map" resultMap="resultMap">
+  SELECT
+	<choose>
+  <when test="groupBy=='year'">
+	DATE_FORMAT(spend_date, '%Y') szDate,
+  </when>
+  <when test="groupBy=='month'">
+  DATE_FORMAT(spend_date, '%Y-%m') szDate,
+  </when>
+ <otherwise>
+ DATE_FORMAT(spend_date, '%Y-%m-%d') szDate,
+ </otherwise>
+  </choose>
+	sum(spend_money) spend_money,
+	sum(earning_money) earning_money
+FROM
+	(
+		SELECT
+
+	s.spend_date,s.money spend_money,e.money earning_money
+FROM
+	spend s
+LEFT JOIN earning e ON s.spend_date = e.earning_date 
+where s.m_id in (select m_id from role_member where r_id=#{rId})
+UNION
+	SELECT
+		s.spend_date,s.money spend_money,e.money earning_money
+	FROM
+		spend s
+	RIGHT JOIN earning e ON s.spend_date = e.earning_date 
+	where s.m_id in (select m_id from role_member where r_id=#{rId})) t 
+	<where>
+	<if test="beginDate!=null and beginDate!=''">
+	and t.spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and t.spend_date&lt;=#{endDate}
+	</if>
+	</where>
+	group by szDate 
+	<if test="start != null">
+	 order by ${sort} ${order} limit #{start},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectEarningSpendStatsCount" resultType="int" parameterType="map">
+  select count(1) from (
+  SELECT
+	<choose>
+  <when test="groupBy=='year'">
+	DATE_FORMAT(spend_date, '%Y') szDate,
+  </when>
+  <when test="groupBy=='month'">
+  DATE_FORMAT(spend_date, '%Y-%m') szDate,
+  </when>
+ <otherwise>
+ DATE_FORMAT(spend_date, '%Y-%m-%d') szDate,
+ </otherwise>
+  </choose>
+	sum(spend_money) spend_money,
+	sum(earning_money) earning_money
+FROM
+	(
+		SELECT
+
+	s.spend_date,s.money spend_money,e.money earning_money
+FROM
+	spend s
+LEFT JOIN earning e ON s.spend_date = e.earning_date 
+where s.m_id in (select m_id from role_member where r_id=#{rId})
+UNION
+	SELECT
+		s.spend_date,s.money spend_money,e.money earning_money
+	FROM
+		spend s
+	RIGHT JOIN earning e ON s.spend_date = e.earning_date 
+	where s.m_id in (select m_id from role_member where r_id=#{rId})) t
+	<where>
+	<if test="beginDate!=null and beginDate!=''">
+	and t.spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and t.spend_date&lt;=#{endDate}
+	</if>
+	</where>
+	 group by szDate 
+  ) cc
+  </select>
+</mapper>

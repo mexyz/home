@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+       xmlns:context="http://www.springframework.org/schema/context"  
+       xmlns:mvc="http://www.springframework.org/schema/mvc"  
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd  
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd ">  
+      
+        <!-- 启用spring mvc 注解-->  
+    <mvc:annotation-driven>
+    <mvc:message-converters>  
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
+                <property name="supportedMediaTypes">
+	                <list>
+	                    <value>text/html;charset=UTF-8</value>
+	                </list>
+			    </property>
+             </bean>
+             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">  
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">  
+                        <property name="dateFormat">  
+                            <bean class="java.text.SimpleDateFormat">  
+                                <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />  
+                            </bean>  
+                        </property>  
+                        
+                    </bean>  
+                </property>
+             </bean>  
+        </mvc:message-converters>  
+    </mvc:annotation-driven>  
+    
+    <mvc:resources mapping="/static/**" location="/static/" />
+      
+    <!-- 自动扫描的包名 ，使Spring支持自动检测组件-->  
+    <context:component-scan base-package="com.xyz.home" />  
+      
+    <bean id="placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:init.properties</value>
+			</list>
+		</property>
+		<property name="fileEncoding" value="utf-8" />
+	</bean>
+    
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${datasource.driverClassName}"></property>
+		<property name="jdbcUrl" value="${datasource.url}"></property>
+		<property name="user" value="${datasource.username}"></property>
+		<property name="password" value="${datasource.password}"></property>
+		<property name="maxStatements" value="${c3p0.maxStatements}"></property>
+		<property name="minPoolSize" value="${c3p0.minSize}"></property>
+		<property name="maxPoolSize" value="${c3p0.maxSize}"></property>
+		<property name="initialPoolSize" value="${c3p0.initialPoolsize}"></property>
+		<property name="idleConnectionTestPeriod" value="${c3p0.idleConnectionTestPeriod}"></property>
+		<property name="maxIdleTime" value="${c3p0.maxIdleTime}"></property>
+		<property name="acquireIncrement" value="${c3p0.acquireIncrement}"></property>
+		<property name="testConnectionOnCheckin" value="${c3p0.testConnectionOnCheckin}"></property>
+		<property name="testConnectionOnCheckout" value="${c3p0.testConnectionOnCheckout}"></property>
+		<property name="acquireRetryAttempts" value="${c3p0.acquireRetryAttempts}"></property>
+		<property name="numHelperThreads" value="${c3p0.numHelperThreads}"></property>
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:mappers/*Mapper.xml" />
+		<property name="typeAliasesPackage" value="com.xyz.home.model" />  
+	</bean> 
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="annotationClass" value="org.springframework.stereotype.Repository" />
+        <property name="basePackage" value="com.xyz.home.dao" />
+    </bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource" />  
+    </bean>  
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="sel*" read-only="true"/>
+			<tx:method name="add*" propagation="REQUIRED"/>
+			<tx:method name="mod" propagation="REQUIRED"/>
+			<tx:method name="del*" propagation="REQUIRED"/>
+			<tx:method name="*"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="myPointcut"
+			expression="execution(* com.xyz.home.service.impl.*Impl.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut" />
+	</aop:config>
+    
+    
+    <!-- 视图解析器:定义跳转的文件的前后缀 -->    
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">    
+        <property name="prefix" value="/WEB-INF/page/" />    
+        <property name="suffix" value=".jsp" />  <!--可为空,方便实现自已的依据扩展名来选择视图解释类的逻辑  -->  
+    </bean>    
+  
+    <!--配置拦截器, 多个拦截器,顺序执行 -->   
+    <mvc:interceptors>    
+        <mvc:interceptor>    
+            <!-- 匹配的是url路径  -->  
+            <mvc:mapping path="/**" /> 
+            <mvc:exclude-mapping path="/static/**"/>
+            <bean class="com.xyz.home.interceptor.CommonInterceptor"></bean>    
+        </mvc:interceptor>  
+        <!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 -->  
+    </mvc:interceptors>  
+        
+</beans>     

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyz.home.dao.MemberDao" >
+  
+  <resultMap id="BaseResultMap" type="com.xyz.home.model.Member" >
+    <result column="m_id" property="mId" jdbcType="INTEGER" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="resultMap" type="map" >
+    <result column="m_id" property="mId" jdbcType="INTEGER" />
+    <result column="u_id" property="uId" jdbcType="INTEGER" />
+    <result column="r_id" property="rId" jdbcType="INTEGER" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="INTEGER" />
+    <result column="add_date" property="addDate" jdbcType="TIMESTAMP" />
+    <result column="call_name" property="callName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <select id="selectMember" resultMap="resultMap" parameterType="map">
+  SELECT m.m_id,m.real_name,m.gender,m.add_date,c.call_name from member m LEFT JOIN `call` c on m.m_id=c.m_id and c.u_id=#{userId} left join role_member rm on m.m_id=rm.m_id
+  where rm.r_id=#{rId}
+	  <if test="realName!=null and realName!=''">
+	 and m.real_name like CONCAT('%',#{realName},'%')
+	  </if>
+  order by ${sort} ${order} limit #{start},#{pageSize}
+  </select>
+  
+  <select id="selectMemberCount" resultType="int" parameterType="map">
+  SELECT count(1) from member m left join role_member rm on m.m_id=rm.m_id
+  where rm.r_id=#{rId}
+	  <if test="realName!=null and realName!=''">
+	  real_name like CONCAT('%',#{realName},'%')
+	  </if>
+  </select>
+  
+  <insert id="addMember" parameterType="com.xyz.home.model.Member" useGeneratedKeys="true" keyProperty="mId">
+    insert into member
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mId != null" >
+        m_id,
+      </if>
+      <if test="realName != null" >
+        real_name,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="addDate != null" >
+        add_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mId != null" >
+        #{mId,jdbcType=INTEGER},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="addDate != null" >
+        #{addDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <delete id="delMenber" parameterType="map">
+  delete from member where m_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+   <update id="modMember" parameterType="com.xyz.home.model.Member" >
+    update member
+    <set>
+      <if test="realName != null" >
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=INTEGER},
+      </if>
+    </set>
+    where m_id = #{mId,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectMemberList" resultMap="resultMap" parameterType="map">
+  select m.m_id,m.real_name,c.call_name,rm.r_id  from member m LEFT JOIN `call` c on m.m_id=c.m_id and c.u_id=#{uId} left join role_member rm on rm.m_id=m.m_id and rm.r_id=#{rId}
+<where>
+<if test="rId!=null and rId!=''">
+rm.r_id=#{rId}
+</if>
+</where>
+</select>
+
+<select id="selectMemberListAll" resultMap="resultMap" parameterType="map">
+  select m.m_id,m.real_name,c.call_name,rm.r_id  from member m LEFT JOIN `call` c on m.m_id=c.m_id and c.u_id=#{uId} left join role_member rm on rm.m_id=m.m_id and rm.r_id=#{rId}
+</select>
+  
+</mapper>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyz.home.dao.SpendDao" >
+  <resultMap id="BaseResultMap" type="com.xyz.home.model.Spend" >
+    <result column="s_id" property="sId" jdbcType="INTEGER" />
+    <result column="ca_id" property="caId" jdbcType="INTEGER" />
+    <result column="m_id" property="mId" jdbcType="INTEGER" />
+    <result column="money" property="money" jdbcType="REAL" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="spend_date" property="spendDate" jdbcType="DATE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="resultMap" type="map" >
+    <result column="s_id" property="sId" jdbcType="INTEGER" />
+    <result column="ca_id" property="caId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="call_name" property="callName" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="m_id" property="mId" jdbcType="INTEGER" />
+    <result column="money" property="money" jdbcType="REAL" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="spend_date" property="spendDate" jdbcType="DATE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectSpend" parameterType="map" resultMap="resultMap">
+	  SELECT
+		b.s_id,
+		b.ca_id,
+		m.m_id,
+		ca.`name`,
+		c.call_name,
+		m.real_name,
+		b.money,
+		b.create_date,
+		b.spend_date,
+		b.remark
+	FROM
+		spend b
+	LEFT JOIN category ca ON b.ca_id = ca.ca_id
+	LEFT JOIN member m ON b.m_id = m.m_id
+	LEFT JOIN `call` c ON b.m_id = c.m_id and c.u_id=#{uId}
+	<where>
+	<if test="caId!=null and caId!=''">
+	and ca.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and m.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.spend_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	</where>
+	order by ${sort} ${order} limit #{start},#{pageSize}
+  </select>
+  
+  <select id="selectSpendCount" resultType="int" parameterType="map">
+   SELECT
+		count(1)
+	FROM
+		spend b
+	LEFT JOIN category ca ON b.ca_id = ca.ca_id
+	LEFT JOIN member m ON b.m_id = m.m_id
+	LEFT JOIN `call` c ON b.m_id = c.m_id and c.u_id=#{uId}
+	<where>
+	<if test="caId!=null and caId!=''">
+	and ca.ca_id in <foreach item="item" index="index" collection="caId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="mId!=null and mId!=''">
+	and m.m_id in <foreach item="item" index="index" collection="mId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+	</if>
+	<if test="beginDate!=null and beginDate!=''">
+	and b.spend_date&gt;=#{beginDate}
+	</if>
+	<if test="endDate!=null and endDate!=''">
+	and b.spend_date&lt;=#{endDate}
+	</if>
+	<if test="beginMoney!=null and beginMoney!=''">
+	and b.money&gt;=#{beginMoney}
+	</if>
+	<if test="endMoney!=null and endMoney!=''">
+	and b.money&lt;=#{endMoney}
+	</if>
+	</where>
+  </select>
+  
+  <insert id="addSpend" parameterType="com.xyz.home.model.Spend">
+  insert into spend
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sId != null" >
+        s_id,
+      </if>
+      <if test="caId != null" >
+        ca_id,
+      </if>
+      <if test="mId != null" >
+        m_id,
+      </if>
+      <if test="money != null" >
+        money,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="spendDate != null" >
+        spend_date,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sId != null" >
+        #{sId,jdbcType=INTEGER},
+      </if>
+      <if test="caId != null" >
+        #{caId,jdbcType=INTEGER},
+      </if>
+      <if test="mId != null" >
+        #{mId,jdbcType=INTEGER},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=REAL},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spendDate != null" >
+        #{spendDate,jdbcType=DATE},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="modSpend" parameterType="com.xyz.home.model.Spend">
+  update spend
+    <set >
+      <if test="caId != null" >
+        ca_id = #{caId,jdbcType=INTEGER},
+      </if>
+      <if test="mId != null" >
+        m_id = #{mId,jdbcType=INTEGER},
+      </if>
+      <if test="money != null" >
+        money = #{money,jdbcType=REAL},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spendDate != null" >
+        spend_date = #{spendDate,jdbcType=DATE},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where s_id = #{sId,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="delSpend" parameterType="map">
+  delete from spend
+    where s_id in <foreach item="item" index="index" collection="sId"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+  
+  <update id="modCaIdNull" parameterType="map">
+  update spend set ca_id=null
+    where ca_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </update>
+  
+  <update id="modMIdNull" parameterType="map">
+  update spend set m_id=null
+    where m_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </update>
+</mapper>

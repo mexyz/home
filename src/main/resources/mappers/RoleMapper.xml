@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyz.home.dao.RoleDao" >
+  <resultMap id="BaseResultMap" type="map" >
+    <result column="r_id" property="rId" jdbcType="INTEGER" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="add_date" property="addDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <select id="selectRoleCombo" resultMap="BaseResultMap">
+  select r_id,role_name from role
+  </select>
+  
+  <select id="selectRole" resultMap="BaseResultMap" parameterType="map">
+  SELECT * from role
+  <where>
+	  <if test="roleName!=null and roleName!=''">
+	  role_name like CONCAT('%',#{roleName},'%')
+	  </if>
+  </where>
+  order by ${sort} ${order} limit #{start},#{pageSize}
+  </select>
+  
+  <select id="selectRoleCount" resultType="int" parameterType="map">
+  SELECT count(1) from role
+  <where>
+	  <if test="roleName!=null and roleName!=''">
+	  role_name like CONCAT('%',#{roleName},'%')
+	  </if>
+  </where>
+  </select>
+  
+  <insert id="addRole" parameterType="com.xyz.home.model.Role" useGeneratedKeys="true" keyProperty="rId">
+    insert into role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rId != null" >
+        r_id,
+      </if>
+      <if test="roleName != null" >
+        role_name,
+      </if>
+      <if test="addDate != null" >
+        add_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rId != null" >
+        #{rId,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="addDate != null" >
+        #{addDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <delete id="delRole" parameterType="map">
+  delete from role where r_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+   <update id="modRole" parameterType="com.xyz.home.model.Role" >
+    update role
+    <set>
+      <if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where r_id = #{rId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectRoleList" resultMap="BaseResultMap" parameterType="map">
+   SELECT * from role
+  <where>
+	  <if test="roleName!=null and roleName!=''">
+	  role_name = #{roleName}
+	  </if>
+	  <if test="rId!=null and rId!=''">
+	  and r_id = #{rId}
+	  </if>
+  </where>
+  </select>
+  
+  
+  <delete id="delRoleMember" parameterType="map">
+   delete from role_member where r_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+  <delete id="delRoleMemberByMId" parameterType="map">
+   delete from role_member where m_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+  <delete id="delRoleMenu" parameterType="map">
+   delete from role_menu where r_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+  <delete id="delRoleAction" parameterType="map">
+   delete from role_action where r_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+  <insert id="addRoleMember">
+  insert into role_member (r_id,m_id) values (#{rId},#{mId})
+  </insert>
+  <insert id="addRoleMenu">
+  insert into role_menu (r_id,m_id) values (#{rId},#{mId})
+  </insert>
+  <insert id="addRoleAction">
+  insert into role_action (r_id,a_id) values (#{rId},#{aId})
+  </insert>
+  
+    <select id="selectRoleAction" resultMap="BaseResultMap">
+  SELECT ra.r_id,a.url FROM role_action ra left join action a on ra.a_id=a.a_id
+  </select>
+</mapper>

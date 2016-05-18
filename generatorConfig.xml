@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+  <context id="context1" >
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3306/home" userId="root" password="root" />
+    <javaModelGenerator targetPackage="com.xyz.home.test.model" targetProject="D:\XYZ\eclipse-workspace\home\src\main\java" /> 
+    <sqlMapGenerator targetPackage="com.xyz.home.test.mappers" targetProject="D:\XYZ\eclipse-workspace\home\src\main\java" />
+    <javaClientGenerator targetPackage="com.xyz.home.test.dao" targetProject="D:\XYZ\eclipse-workspace\home\src\main\java" type="XMLMAPPER" /> 
+    <table tableName="balance" >
+    </table>
+  </context>
+</generatorConfiguration>

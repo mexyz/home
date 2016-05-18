@@ -1,0 +1,49 @@
+body {
+	height: 100%;
+}
+
+.bg {
+	background-image: url("../images/bg.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	opacity: 0.89;
+	filter: alpha(opacity = 89);
+}
+
+.searchDiv {
+	padding: 0px;
+	font-size: 12px;
+}
+.dgDiv {
+	height: 800px;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 0px solid #95b8e7;
+}
+.table th{
+	text-align: right;
+	background-color: #e0ecff;
+}
+.table td, th {
+	font-weight: normal;
+	border-top: 0;
+	border-right: 1px solid #95b8e7;
+	border-bottom: 1px solid #95b8e7;
+	border-left: 0;
+	padding: 5px;
+	margin: 0px;
+}
+
+.table tr.lastrow td {
+	border-bottom: 0;
+	border-right: 0;
+	text-align: right;
+}
+
+
+.table tr td.lastCol {
+	border-right: 0;
+}

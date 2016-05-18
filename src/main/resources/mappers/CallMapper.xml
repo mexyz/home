@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyz.home.dao.CallDao" >
+  <resultMap id="BaseResultMap" type="com.xyz.home.model.Call" >
+    <id column="c_id" property="cId" jdbcType="INTEGER" />
+    <result column="u_id" property="uId" jdbcType="INTEGER" />
+    <result column="m_id" property="mId" jdbcType="INTEGER" />
+    <result column="call_name" property="callName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <insert id="addCall" parameterType="com.xyz.home.model.Call" >
+    insert into `call`
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cId != null" >
+        c_id,
+      </if>
+      <if test="uId != null" >
+        u_id,
+      </if>
+      <if test="mId != null" >
+        m_id,
+      </if>
+      <if test="callName != null" >
+        call_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cId != null" >
+        #{cId,jdbcType=INTEGER},
+      </if>
+      <if test="uId != null" >
+        #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="mId != null" >
+        #{mId,jdbcType=INTEGER},
+      </if>
+      <if test="callName != null" >
+        #{callName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="modCall" parameterType="com.xyz.home.model.Call" >
+    update `call`
+    <set >
+<!--       <if test="uId != null" >
+        u_id = #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="mId != null" >
+        m_id = #{mId,jdbcType=INTEGER},
+      </if> -->
+      <if test="callName != null" >
+        call_name = #{callName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where m_id = #{mId,jdbcType=INTEGER} and u_id=#{uId,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="delCall" parameterType="map">
+  delete from `call` where u_id=#{uId} and m_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+  <delete id="delCallByMId" parameterType="map">
+  delete from `call` where m_id in
+	<foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </delete>
+  
+  <select id="selectCall" parameterType="com.xyz.home.model.Call" resultType="java.lang.Integer">
+  select count(1) from `call` where u_id=#{uId} and m_id=#{mId}
+  </select>
+  
+  <update id="modUIdNull" parameterType="map">
+   update `call` set u_id=null where u_id in <foreach item="item" index="index" collection="ids"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </update>
+</mapper>
