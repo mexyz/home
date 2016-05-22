@@ -32,8 +32,4 @@ public class AuthCache extends Cache{
 		initCache();
 	}
 
-	
-
-	
-
 }

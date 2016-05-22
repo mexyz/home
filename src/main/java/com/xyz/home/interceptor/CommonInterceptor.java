@@ -31,21 +31,21 @@ public class CommonInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 			Object arg2) throws Exception {
-		String url=request.getRequestURL().toString();
+		String url=request.getRequestURL().toString();//获取当前的url
 		url=url.split("\\?")[0];
 		Object obj=request.getSession().getAttribute("user");
-		if(obj==null){
+		if(obj==null){//用户未登录
+			
 			if(url.endsWith("login")||url.endsWith("loginPage")){
 				return true;
 			}else{
 				response.sendRedirect("../system/loginPage");
 				return false;
 			}
-			
-		}else{
-			
+		}else{//用户已登录
 			if(url.endsWith("add")||url.endsWith("mod")||url.endsWith("del")){
 				Map<String,String> map=(Map<String, String>) obj;
+				//从权限缓存中查询当前角色是否有调用权限
 				List<String> list=(List<String>) AuthCache.getCacheMap(map.get("rId"));
 				boolean f=false;
 				for(String u:list){
@@ -58,8 +58,6 @@ public class CommonInterceptor implements HandlerInterceptor{
 			}else{
 				return true;
 			}
-			
-			
 		}
 		
 	}

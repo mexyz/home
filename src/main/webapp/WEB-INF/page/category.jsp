@@ -11,7 +11,7 @@
 <body class="easyui-layout" fit="true">
  <div data-options="region:'north',border:false">
  <div class="searchDiv">
- <table class="table"><tr><th>真实姓名:</th><td class="lastCol"><input id="realName" class="easyui-textbox" type="text"/></td></tr>
+ <table class="table"><tr><th>收支:</th><td class="lastCol"><input name="type" value="0" checked="checked" type="radio"/>收入&nbsp;&nbsp;&nbsp;<input name="type" value="1" type="radio"/>支出</td></tr>
  <tr class="lastrow"><td colspan="2"><a id="searchBtn" class="easyui-linkbutton" data-options="iconCls:'icon-search'">搜索</a>&nbsp;&nbsp;&nbsp;<a id="clearBtn" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">重置</a></td></tr>
  </table>
 </div>

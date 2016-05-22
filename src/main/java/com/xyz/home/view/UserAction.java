@@ -27,7 +27,7 @@ import com.xyz.home.util.MD5Util;
 import com.xyz.home.util.StringUtil;
 
 @Controller
-@RequestMapping("/system")
+@RequestMapping("/user")
 public class UserAction extends BaseAction{
 	@Autowired
 	private UserService userService;
