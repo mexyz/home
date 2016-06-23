@@ -15,7 +15,7 @@ public class StatsServiceImpl implements StatsService{
 	
 	@Override
 	public Object[] selectTimeStats(Map<String, Object> map) {
-		if(String.valueOf(map.get("type")).equals("0")){
+		if(String.valueOf(map.get("type")).equals("1")){
 			return new Object[]{statsDao.selectTimeSpendStats(map),statsDao.selectTimeSpendStatsCount(map)};
 		}else{
 			return new Object[]{statsDao.selectTimeEarningStats(map),statsDao.selectTimeEarningStatsCount(map)};
@@ -25,7 +25,7 @@ public class StatsServiceImpl implements StatsService{
 
 	@Override
 	public Object[] selectCategoryStats(Map<String, Object> map) {
-		if(String.valueOf(map.get("type")).equals("0")){
+		if(String.valueOf(map.get("type")).equals("1")){
 			return new Object[]{statsDao.selectCategorySpendStats(map),statsDao.selectCategorySpendStatsCount(map)};
 		}else{
 			return new Object[]{statsDao.selectCategoryEarningStats(map),statsDao.selectCategoryEarningStatsCount(map)};
@@ -35,7 +35,7 @@ public class StatsServiceImpl implements StatsService{
 
 	@Override
 	public Object[] selectMemberStats(Map<String, Object> map) {
-		if(String.valueOf(map.get("type")).equals("0")){
+		if(String.valueOf(map.get("type")).equals("1")){
 			return new Object[]{statsDao.selectMemberSpendStats(map),statsDao.selectMemberSpendStatsCount(map)};
 		}else{
 			return new Object[]{statsDao.selectMemberEarningStats(map),statsDao.selectMemberEarningStatsCount(map)};

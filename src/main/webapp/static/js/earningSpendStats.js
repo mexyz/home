@@ -66,13 +66,8 @@ $(function(){
     $("#searchBtn").click(function(){
     	$('#dg').datagrid("options").queryParams={
     		groupBy:$("#search_groupBy").combobox("getValue"),
-    		type:$(".searchDiv input[name='search_type']:first").prop("checked")?0:1,
-    		caId: $("#search_caId").combotree("getValues").toString(),
-    		mId: $("#search_mId").combobox("getValues").toString(),
     		beginDate: $("#search_beginDate").datebox("getValue"),
-    		endDate: $("#search_endDate").datebox("getValue"),
-    		beginMoney: $("#search_beginMoney").numberbox("getValue"),
-    		endMoney: $("#search_endMoney").numberbox("getValue")
+    		endDate: $("#search_endDate").datebox("getValue")
     	};
     	$('#dg').datagrid("reload");
     });

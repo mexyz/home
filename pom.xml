@@ -61,6 +61,11 @@
 			<version>1.2.14</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>3.2.7</version>
@@ -182,4 +187,5 @@
             </plugin>
         </plugins>
     </build>
+    
 </project>

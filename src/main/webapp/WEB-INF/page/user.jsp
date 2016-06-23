@@ -12,7 +12,7 @@
 <body class="easyui-layout" fit="true">
  <div data-options="region:'north',border:false">
  <div class="searchDiv">
-<table class="table"><tr><th>用户名:</th><td><input id="userName" class="easyui-textbox" type="text"/></td><th>角色:</th><td><input id="roleName" class="easyui-textbox" type="text"/></td><th>登陆时间:</th><td class="lastCol"><input id="beginTime" class="easyui-datetimebox"/>至<input id="endTime" class="easyui-datetimebox"/></td></tr>
+<table class="table"><tr><th>用户名:</th><td><input id="userName" class="easyui-textbox" type="text"/></td><th>角色:</th><td><input id="roleName" class="easyui-textbox" type="text"/></td><th>登录时间:</th><td class="lastCol"><input id="beginTime" class="easyui-datetimebox"/>至<input id="endTime" class="easyui-datetimebox"/></td></tr>
 <tr class="lastrow"><td colspan="6"><a id="searchBtn" class="easyui-linkbutton" data-options="iconCls:'icon-search'">搜索</a>&nbsp;&nbsp;&nbsp;<a id="clearBtn" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">重置</a></td></tr></table>
 </div>
  </div>
